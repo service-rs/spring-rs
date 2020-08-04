@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <Pattern>
+                %clr(%d{MM-dd HH:mm}){faint} %clr(%5p) %clr(---){faint} %clr(%-60.60logger{59}){cyan} %clr(:){faint} %m%n%wEx
+            </Pattern>
+        </layout>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+    <logger name="me.kfricilone" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+</configuration>

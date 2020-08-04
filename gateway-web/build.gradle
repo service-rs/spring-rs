@@ -1,0 +1,36 @@
+plugins {
+	id 'org.springframework.boot'
+	id 'io.spring.dependency-management'
+	id 'org.jetbrains.kotlin.plugin.spring'
+}
+
+dependencies {
+	implementation project(":api-messages")
+
+	implementation 'org.jetbrains.kotlin:kotlin-reflect'
+	implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
+	implementation "org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$coroutines_version"
+
+	implementation "com.fasterxml.jackson.module:jackson-module-kotlin:$jackson_version"
+
+	implementation "io.grpc:grpc-protobuf:$grpc_version"
+	implementation "io.grpc:grpc-stub:$grpc_version"
+	implementation "io.grpc:grpc-okhttp:$grpc_version"
+	implementation "com.github.marcoferrer.krotoplus:kroto-plus-coroutines:$kroto_version"
+
+	//implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.cloud:spring-cloud-starter-consul-config'
+	implementation 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
+	testImplementation('org.springframework.boot:spring-boot-starter-test') {
+	  exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+	}
+}
+
+dependencyManagement {
+  imports {
+    mavenBom "org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion"
+  }
+}
