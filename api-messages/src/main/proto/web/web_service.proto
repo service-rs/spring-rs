@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+import "web/client/client_request.proto";
+import "web/client/config_request.proto";
+
+import "web/server/client_response.proto";
+import "web/server/config_response.proto";
+
+option java_package = "me.kfricilone.spring.api.messages.web";
+option java_multiple_files = true;
+
+service WebService {
+
+    rpc GetClient (WebClientRequest) returns (WebClientResponse);
+
+    rpc GetConfig (WebConfigRequest) returns (WebConfigResponse);
+    
+}

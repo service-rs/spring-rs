@@ -1,0 +1,20 @@
+{
+  "protoBuilders": [
+    {
+      "unwrapBuilders": true,
+      "useDslMarkers": true
+    }
+  ],
+  "grpcStubExts": [
+    {
+      "supportCoroutines": true
+    }
+  ],
+  "grpcCoroutines": [
+    {}
+  ],
+  "extendableMessages": [],
+  "mockServices": [],
+  "generatorScripts": [],
+  "insertions": []
+}

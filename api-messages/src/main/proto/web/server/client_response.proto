@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option java_package = "me.kfricilone.spring.api.messages.web.server";
+option java_multiple_files = true;
+
+message WebClientResponse {
+    int32 type = 1;
+    string name = 2;
+    bytes client = 3;
+}

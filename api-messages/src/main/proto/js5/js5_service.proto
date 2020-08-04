@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "js5/client/file_request.proto";
+import "js5/server/file_response.proto";
+
+option java_package = "me.kfricilone.spring.api.messages.js5";
+option java_multiple_files = true;
+
+service Js5Service {
+
+    rpc GetFile (Js5FileRequest) returns (Js5FileResponse);
+
+}

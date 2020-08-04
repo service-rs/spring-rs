@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option java_package = "me.kfricilone.spring.api.messages.js5.client";
+option java_multiple_files = true;
+
+message Js5FileRequest {
+    int32 archive = 1;
+    int32 group = 2;
+}
