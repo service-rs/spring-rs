@@ -5,7 +5,6 @@ plugins {
 }
 
 dependencies {
-    implementation project(":api-cache")
     implementation project(":api-messages")
 
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
