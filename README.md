@@ -5,7 +5,7 @@
 1.  Clone repository
 
     ```bash
-        git clone https://github.com/kfricilone/Taylir
+        git clone https://github.com/service-rs/spring-rs
     ```
 
 2.  Build using Gradle Wrapper
