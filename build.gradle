@@ -1,0 +1,52 @@
+plugins {
+	id 'idea'
+	id 'org.jetbrains.kotlin.jvm' apply false
+	id "com.github.ben-manes.versions" version "0.28.0"
+}
+
+group = 'me.kfricilone'
+version = '0.0.1-SNAPSHOT'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+}
+
+subprojects {
+	apply plugin: 'org.jetbrains.kotlin.jvm'
+
+	group = "me.kfricilone"
+	version = '0.0.1-SNAPSHOT'
+	java.sourceCompatibility = JavaVersion.VERSION_11
+
+	repositories {
+		mavenCentral()
+		maven { url 'https://jitpack.io' }
+	}
+
+	dependencies {
+		if (JavaVersion.current().isJava9Compatible()) {
+			implementation "javax.annotation:javax.annotation-api:$jx_annotation_version"
+		}
+	}
+
+	test {
+		useJUnitPlatform()
+	}
+
+	compileKotlin {
+		kotlinOptions {
+			freeCompilerArgs = ['-Xjsr305=strict']
+			jvmTarget = JavaVersion.VERSION_11.toString()
+		}
+	}
+
+	compileTestKotlin {
+		kotlinOptions {
+			freeCompilerArgs = ['-Xjsr305=strict']
+			jvmTarget = JavaVersion.VERSION_11.toString()
+		}
+	}
+}

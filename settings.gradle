@@ -1,0 +1,21 @@
+pluginManagement {
+    plugins {
+        id 'org.jetbrains.kotlin.jvm' version kotlin_version
+        id 'org.jetbrains.kotlin.plugin.spring' version kotlin_version
+        id 'org.springframework.boot' version spring_boot_version
+        id 'io.spring.dependency-management' version spring_dep_version
+        id 'com.google.protobuf' version protobuf_version
+    }
+}
+
+rootProject.name = "spring-rs"
+
+include(
+        "api-cache",
+        "api-messages",
+        "gateway-rs",
+        "gateway-web",
+        "service-web",
+        "service-js5",
+        "service-lobby",
+)
