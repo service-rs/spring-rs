@@ -24,13 +24,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
  */
 
-package me.kfricilone.spring.service.web
+package me.kfricilone.spring.service.web.resource
 
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import lzma.streams.LzmaOutputStream
+import me.kfricilone.spring.service.web.config.ClientConfig
 import me.kfricilone.spring.service.web.util.BinaryType
 import me.kfricilone.spring.service.web.util.ClientContext
 import me.kfricilone.spring.service.web.util.ClientLayout

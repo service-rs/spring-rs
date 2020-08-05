@@ -26,19 +26,47 @@
 
 package me.kfricilone.spring.service.web
 
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan
-import org.springframework.boot.runApplication
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient
+import com.google.protobuf.ByteString
+import me.kfricilone.spring.api.messages.web.WebServiceCoroutineGrpc
+import me.kfricilone.spring.api.messages.web.client.WebClientRequest
+import me.kfricilone.spring.api.messages.web.client.WebConfigRequest
+import me.kfricilone.spring.api.messages.web.server.WebClientResponse
+import me.kfricilone.spring.api.messages.web.server.WebConfigResponse
+import me.kfricilone.spring.service.web.resource.ClientResource
+import me.kfricilone.spring.service.web.util.BinaryType
+import org.lognet.springboot.grpc.GRpcService
 
 /**
  * Created by Kyle Fricilone on Jul 28, 2020.
  */
-@SpringBootApplication
-@EnableDiscoveryClient
-@ConfigurationPropertiesScan
-class WebApplication
+@GRpcService
+class WebService(
+    val clients: ClientResource
+) : WebServiceCoroutineGrpc.WebServiceImplBase() {
 
-fun main(args: Array<String>) {
-	runApplication<WebApplication>(*args)
+    override suspend fun getClient(request: WebClientRequest): WebClientResponse {
+        val builder = WebClientResponse.newBuilder()
+            .setType(request.type)
+
+        val type = BinaryType.valueOf(request.type)
+        clients.contexts[type]?.let { ctx ->
+            ctx.getFile(request.name, request.crc)?.let {
+                builder.setClient(ByteString.copyFrom(it))
+            }
+        }
+
+        return builder.build()
+    }
+
+    override suspend fun getConfig(request: WebConfigRequest): WebConfigResponse {
+        val builder = WebConfigResponse.newBuilder()
+            .setType(request.type)
+
+        val type = BinaryType.valueOf(request.type)
+        clients.contexts[type]?.let {
+            builder.setConfig(ByteString.copyFrom(it.config))
+        }
+
+        return builder.build()
+    }
 }

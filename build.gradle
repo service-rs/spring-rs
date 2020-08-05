@@ -1,10 +1,9 @@
 plugins {
 	id 'idea'
 	id 'org.jetbrains.kotlin.jvm' apply false
-	id "com.github.ben-manes.versions" version "0.28.0"
 }
 
-group = 'me.kfricilone'
+group = 'me.kfricilone.spring'
 version = '0.0.1-SNAPSHOT'
 
 repositories {
@@ -17,7 +16,7 @@ dependencies {
 subprojects {
 	apply plugin: 'org.jetbrains.kotlin.jvm'
 
-	group = "me.kfricilone"
+	group = "me.kfricilone.spring"
 	version = '0.0.1-SNAPSHOT'
 	java.sourceCompatibility = JavaVersion.VERSION_11
 
@@ -27,9 +26,7 @@ subprojects {
 	}
 
 	dependencies {
-		if (JavaVersion.current().isJava9Compatible()) {
-			implementation "javax.annotation:javax.annotation-api:$jx_annotation_version"
-		}
+		implementation "javax.annotation:javax.annotation-api:$jx_annotation_version"
 	}
 
 	test {

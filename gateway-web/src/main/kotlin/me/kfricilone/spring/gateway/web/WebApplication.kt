@@ -26,123 +26,14 @@
 
 package me.kfricilone.spring.gateway.web
 
-import io.grpc.ManagedChannelBuilder
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.asExecutor
-import me.kfricilone.spring.api.messages.js5.Js5ServiceCoroutineGrpc
-import me.kfricilone.spring.api.messages.web.WebServiceCoroutineGrpc
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
-import org.springframework.cloud.client.ServiceInstance
-import org.springframework.cloud.client.loadbalancer.LoadBalancerClient
-import org.springframework.http.HttpHeaders
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import java.util.Optional
 
 /**
  * Created by Kyle Fricilone on Jul 28, 2020.
  */
 @SpringBootApplication
-class WebApplication {
-
-    @RestController
-    class WebController {
-
-        @Autowired
-        lateinit var client: LoadBalancerClient
-
-        @GetMapping("/config.ws")
-        suspend fun config(
-            @RequestParam(name = "binaryType") type: Optional<Int>
-        ): ResponseEntity<ByteArray> {
-
-            val response = web(client.choose("grpc-spring-service-web"))
-                .getConfig { setType(type.orElse(-1)) }
-
-            val headers = HttpHeaders().apply {
-                set("Server", "JAGeX/3.1")
-                set("Content-Type", "text/plain; charset=ISO-8859-1")
-            }
-
-            return ResponseEntity.ok().headers(headers).body(response.config.toByteArray())
-
-        }
-
-        @GetMapping("/client")
-        suspend fun client(
-            @RequestParam(name = "binaryType") type: Int,
-            @RequestParam(name = "fileName") name: String,
-            @RequestParam crc: Int
-        ): ResponseEntity<ByteArray> {
-
-            val response = web(client.choose("grpc-spring-service-web"))
-                .getClient {
-                    setType(type)
-                    setName(name)
-                    setCrc(crc.toLong())
-                }
-
-            val headers = HttpHeaders().apply {
-                set("Server", "JAGeX/3.1")
-                set("Content-Type", "application/octet-stream")
-                set("Content-Disposition", "filename=$name")
-                set("Content-Encoding", "lzma")
-            }
-
-            return ResponseEntity.ok().headers(headers).body(response.client.toByteArray())
-
-        }
-
-        @GetMapping("/ms")
-        suspend fun ms(
-            @RequestParam(name = "m") mode: Int,
-            @RequestParam(name = "a") archive: Int,
-            @RequestParam(name = "g") group: Int,
-            @RequestParam(name = "cb") timestamp: Optional<Long>,
-            @RequestParam(name = "c") crc: Optional<Int>,
-            @RequestParam(name = "v") version: Optional<Int>
-        ): ResponseEntity<ByteArray> {
-
-            val resp = js5(client.choose("grpc-spring-service-js5"))
-                .getFile {
-                    setArchive(archive)
-                    setGroup(group)
-                }
-
-            val headers = HttpHeaders().apply {
-                set("Server", "JAGeX/3.1")
-                set("Content-Type", "application/octet-stream")
-            }
-
-            return ResponseEntity.ok().headers(headers).body(resp.file.toByteArray())
-
-        }
-
-        private suspend fun js5(instance: ServiceInstance): Js5ServiceCoroutineGrpc.Js5ServiceCoroutineStub {
-            val channel = ManagedChannelBuilder.forTarget("${instance.host}:${instance.port}")
-                .executor(Dispatchers.IO.asExecutor())
-                .usePlaintext()
-                .build()
-
-            return Js5ServiceCoroutineGrpc.newStubWithContext(channel)
-        }
-
-        private suspend fun web(instance: ServiceInstance): WebServiceCoroutineGrpc.WebServiceCoroutineStub {
-            val channel = ManagedChannelBuilder.forTarget("${instance.host}:${instance.port}")
-                .executor(Dispatchers.IO.asExecutor())
-                .usePlaintext()
-                .build()
-
-            return WebServiceCoroutineGrpc.newStubWithContext(channel)
-        }
-
-    }
-
-}
+class WebApplication
 
 fun main(args: Array<String>) {
     runApplication<WebApplication>(*args)
