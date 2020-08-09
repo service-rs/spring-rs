@@ -33,5 +33,5 @@ data class ClientLayout(
     val type: BinaryType,
     val sub: String,
     val client: String? = null,
-    val libs: MutableList<String> = mutableListOf()
+    val libs: List<String> = listOf()
 )

@@ -32,7 +32,7 @@ import org.springframework.boot.context.properties.ConstructorBinding
 /**
  * Created by Kyle Fricilone on Jul 28, 2020.
  */
-@ConfigurationProperties("dir")
+@ConfigurationProperties("rs")
 @ConstructorBinding
 data class ClientConfig(
     val clients: String

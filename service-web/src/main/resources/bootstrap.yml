@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: service-web
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      discovery:
+        register-health-check: false
+      config:
+        prefix: spring-rs/master
+        format: files

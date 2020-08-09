@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: gateway-web
+  cloud:
+    consul:
+      host: ${CONSUL_HOST:localhost}
+      config:
+        prefix: spring-rs/master
+        format: files

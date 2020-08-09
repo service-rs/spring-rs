@@ -1,6 +1,6 @@
 # Spring-RS
 
-Microservies example using Spring boot, gRPC and Consul
+Microservices example using Spring boot, gRPC and Consul
 
 # Table of contents
 

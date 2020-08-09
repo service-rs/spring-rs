@@ -140,7 +140,7 @@ class ClientResource(
 
     companion object {
 
-        val layouts: MutableList<ClientLayout> = mutableListOf(
+        val layouts: List<ClientLayout> = listOf(
             ClientLayout(BinaryType.WINDOWS_XP, "nxt/client/windows/x86/normal_xp", "rs2client.exe"),
             ClientLayout(BinaryType.WINDOWS_X86, "nxt/client/windows/x86/normal", "rs2client.exe"),
             ClientLayout(BinaryType.WINDOWS_X86_64, "nxt/client/windows/x86_64/normal", "rs2client.exe"),
@@ -150,13 +150,13 @@ class ClientResource(
                 BinaryType.WINDOWS_X86_COMPAT,
                 "nxt/client/windows/x86/compatibility",
                 "rs2client.exe",
-                mutableListOf("libEGL.dll", "libGLESv2.dll", "D3Dcompiler_43.dll")
+                listOf("libEGL.dll", "libGLESv2.dll", "D3Dcompiler_43.dll")
             ),
             ClientLayout(
                 BinaryType.WINDOWS_X86_64_COMPAT,
                 "nxt/client/windows/x86_64/compatibility",
                 "rs2client.exe",
-                mutableListOf("libEGL.dll", "libGLESv2.dll", "D3Dcompiler_47.dll")
+                listOf("libEGL.dll", "libGLESv2.dll", "D3Dcompiler_47.dll")
             ),
             ClientLayout(BinaryType.ANDROID, "nxt/client/android"),
             ClientLayout(BinaryType.IOS, "nxt/client/ios"),
@@ -164,7 +164,7 @@ class ClientResource(
                 BinaryType.JAVA,
                 "jav/client",
                 "gamepack.jar",
-                mutableListOf("browsercontrol_0.jar", "browsercontrol_1.jar")
+                listOf("browsercontrol_0.jar", "browsercontrol_1.jar")
             )
         )
 
