@@ -34,11 +34,22 @@ import me.kfricilone.spring.api.messages.web.WebServiceCoroutineGrpc
 import org.springframework.cloud.client.ServiceInstance
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient
 import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpHeaders.CONTENT_DISPOSITION
+import org.springframework.http.HttpHeaders.CONTENT_ENCODING
+import org.springframework.http.HttpHeaders.CONTENT_TYPE
+import org.springframework.http.HttpHeaders.SERVER
+import org.springframework.http.HttpHeaders.SET_COOKIE
+import org.springframework.http.MediaType
+import org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE
+import org.springframework.http.MediaType.TEXT_PLAIN
+import org.springframework.http.ResponseCookie
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.CookieValue
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.util.Optional
+import java.util.UUID
 
 /**
  * Created by Kyle Fricilone on Jul 28, 2020.
@@ -50,68 +61,88 @@ class WebController(
 
     @GetMapping("/config.ws")
     suspend fun config(
-        @RequestParam(name = "binaryType") type: Optional<Int>
+        @RequestParam binaryType: Optional<Int>,
+        @CookieValue(name = COOKIE_ID, required = false) webuid: Optional<String>
     ): ResponseEntity<ByteArray> {
 
         val response = web(client.choose("grpc-spring-service-web"))
-            .getConfig { setType(type.orElse(-1)) }
+            .getConfig { type = binaryType.orElse(-1) }
+
+        val cookie = ResponseCookie.from(COOKIE_ID, webuid.orElse(uid()))
+            .path("/")
+            .build()
 
         val headers = HttpHeaders().apply {
-            set("Server", "JAGeX/3.1")
-            set("Content-Type", "text/plain; charset=ISO-8859-1")
+            set(SERVER, JAGEX_SERVER)
+            set(CONTENT_TYPE, CONFIG_TYPE)
+            set(SET_COOKIE, cookie.toString())
         }
 
-        return ResponseEntity.ok().headers(headers).body(response.config.toByteArray())
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(response.config.toByteArray())
 
     }
 
     @GetMapping("/client")
     suspend fun client(
-        @RequestParam(name = "binaryType") type: Int,
-        @RequestParam(name = "fileName") name: String,
-        @RequestParam crc: Int
+        @RequestParam binaryType: Int,
+        @RequestParam fileName: String,
+        @RequestParam crc: Int,
+        @CookieValue(name = COOKIE_ID, required = false) webuid: Optional<String>
     ): ResponseEntity<ByteArray> {
+
+        println(webuid)
 
         val response = web(client.choose("grpc-spring-service-web"))
             .getClient {
-                setType(type)
-                setName(name)
+                type = binaryType
+                name = fileName
                 setCrc(crc.toLong())
             }
 
+        val cookie = ResponseCookie.from(COOKIE_ID, webuid.orElse(uid()))
+            .path("/")
+            .build()
+
         val headers = HttpHeaders().apply {
-            set("Server", "JAGeX/3.1")
-            set("Content-Type", "application/octet-stream")
-            set("Content-Disposition", "filename=$name")
-            set("Content-Encoding", "lzma")
+            set(SERVER, JAGEX_SERVER)
+            set(CONTENT_TYPE, APPLICATION_OCTET_STREAM_VALUE)
+            set(CONTENT_DISPOSITION, "filename=$fileName")
+            set(CONTENT_ENCODING, CLIENT_ENCODING)
+            set(SET_COOKIE, cookie.toString())
         }
 
-        return ResponseEntity.ok().headers(headers).body(response.client.toByteArray())
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(response.client.toByteArray())
 
     }
 
     @GetMapping("/ms")
     suspend fun ms(
-        @RequestParam(name = "m") mode: Int,
-        @RequestParam(name = "a") archive: Int,
-        @RequestParam(name = "g") group: Int,
-        @RequestParam(name = "cb") timestamp: Optional<Long>,
-        @RequestParam(name = "c") crc: Optional<Int>,
-        @RequestParam(name = "v") version: Optional<Int>
+        @RequestParam m: Int,
+        @RequestParam a: Int,
+        @RequestParam g: Int,
+        @RequestParam cb: Optional<Long>,
+        @RequestParam c: Optional<Int>,
+        @RequestParam v: Optional<Int>
     ): ResponseEntity<ByteArray> {
 
         val resp = js5(client.choose("grpc-spring-service-js5"))
             .getFile {
-                setArchive(archive)
-                setGroup(group)
+                archive = a
+                group = g
             }
 
         val headers = HttpHeaders().apply {
-            set("Server", "JAGeX/3.1")
-            set("Content-Type", "application/octet-stream")
+            set(SERVER, JAGEX_SERVER)
+            set(CONTENT_TYPE, APPLICATION_OCTET_STREAM_VALUE)
         }
 
-        return ResponseEntity.ok().headers(headers).body(resp.file.toByteArray())
+        return ResponseEntity.ok()
+            .headers(headers)
+            .body(resp.file.toByteArray())
 
     }
 
@@ -131,6 +162,17 @@ class WebController(
             .build()
 
         return WebServiceCoroutineGrpc.newStubWithContext(channel)
+    }
+
+    companion object {
+
+        private const val JAGEX_SERVER = "JAGeX/3.1"
+        private const val CLIENT_ENCODING = "lzma"
+        private const val COOKIE_ID = "JXWEBUID"
+        private val CONFIG_TYPE = MediaType(TEXT_PLAIN, Charsets.ISO_8859_1).toString()
+
+        private fun uid() = UUID.randomUUID().toString()
+
     }
 
 }
